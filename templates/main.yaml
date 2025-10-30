@@ -1,0 +1,98 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Stack com Lambda acionada por eventos S3.
+
+Resources:
+  LambdaExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: LambdaS3AutomationRole
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+        - arn:aws:iam::aws:policy/AmazonS3FullAccess
+
+  LambdaFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: my-lambda-task-dev-final-project
+      Handler: handler.lambda_handler
+      Role: !GetAtt LambdaExecutionRole.Arn
+      Code:
+        S3Bucket: my-lambda-artifacts-dev-final-project
+        S3Key: lambda-code.zip
+      Runtime: python3.12
+      Timeout: 30
+
+
+# AWSTemplateFormatVersion: '2010-09-09'
+# Description: Stack com Lambda acionada por eventos S3
+
+# Resources:
+#   ProcessBucket:
+#     Type: AWS::S3::Bucket
+#     Properties:
+#       BucketName: !Sub "${AWS::AccountId}-${AWS::Region}-process-bucket"
+#       NotificationConfiguration:
+#         LambdaConfigurations:
+#           - Event: s3:ObjectCreated:*
+#             Function: !GetAtt ProcessFileLambda.Arn
+
+#   ProcessFileLambdaRole:
+#     Type: AWS::IAM::Role
+#     Properties:
+#       RoleName: !Sub "process-file-lambda-role-${AWS::Region}"
+#       AssumeRolePolicyDocument:
+#         Version: "2012-10-17"
+#         Statement:
+#           - Effect: Allow
+#             Principal:
+#               Service: 
+#                 - lambda.amazonaws.com
+#             Action: 
+#               - sts:AssumeRole
+#       ManagedPolicyArns:
+#         - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+#       Policies:
+#         - PolicyName: AllowS3ReadAccess
+#           PolicyDocument:
+#             Version: "2012-10-17"
+#             Statement:
+#               - Effect: Allow
+#                 Action:
+#                   - s3:GetObject
+#                 Resource: !Sub "arn:aws:s3:::${AWS::AccountId}-${AWS::Region}-process-bucket/*"
+
+#   ProcessFileLambda:
+#     Type: AWS::Lambda::Function
+#     Properties:
+#       FunctionName: !Sub "process-file-lambda-${AWS::Region}"
+#       Handler: index.lambda_handler
+#       Runtime: python3.12
+#       Role: !GetAtt ProcessFileLambdaRole.Arn
+#       Code:
+#         S3Bucket: !Ref LambdaCodeBucket
+#         S3Key: !Ref LambdaCodeKey
+#       Timeout: 30
+
+#   # Permissão para S3 invocar a Lambda
+#   S3InvokePermission:
+#     Type: AWS::Lambda::Permission
+#     Properties:
+#       Action: lambda:InvokeFunction
+#       FunctionName: !Ref ProcessFileLambda
+#       Principal: s3.amazonaws.com
+#       SourceArn: !GetAtt ProcessBucket.Arn
+
+# Parameters:
+#   LambdaCodeBucket:
+#     Type: String
+#     Description: Bucket S3 onde o código da Lambda está armazenado
+#   LambdaCodeKey:
+#     Type: String
+#     Description: Caminho do código da Lambda (ZIP)

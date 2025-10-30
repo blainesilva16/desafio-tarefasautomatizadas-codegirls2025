@@ -1,0 +1,3 @@
+# Dependências para o projeto AWS Lambda + S3
+# Ambiente testado com:
+python==3.12
