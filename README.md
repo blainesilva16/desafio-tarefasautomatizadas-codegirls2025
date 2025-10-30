@@ -108,7 +108,7 @@ def lambda_handler(event, context):
 
 ## 📦 5. Empacotar e enviar o código ao S3
 
-Do diretório src/, compacte o código:
+Compacte o código:
 
 ```bash
 zip -r ../lambda-code.zip .
@@ -120,7 +120,7 @@ aws s3 cp ../lambda-code.zip s3://my-lambda-artifacts-dev/lambda-code.zip
 
 ## 🧱 6. Criar a Stack no CloudFormation
 
-De volta à raiz do projeto:
+Rode o comando:
 
 ```bash
 aws cloudformation create-stack \
