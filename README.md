@@ -12,17 +12,18 @@ lambda-s3-automation/
 │
 
 ├── templates/
+
 │ └── main.yaml # Template CloudFormation (infraestrutura)
 
 │
 
 ├── scripts/
-│ └── deploy.sh
+
+│ └── deploy.sh # Comandos principais usados
 
 │
 
-├── src/
-│ └── handler.py # Código da função Lambda
+├── handler.py # Código da função Lambda
 
 │
 
